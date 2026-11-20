@@ -69,11 +69,17 @@ function App() {
   const generarYProbar = async () => {
     setLoading(true)
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+      const API_URL = (
+        import.meta.env.VITE_API_URL ?? (import.meta.env.DEV ? 'http://localhost:8000' : '')
+      ).replace(/\/$/, '');
 
       const response = await axios.post(`${API_URL}/generar-fuente`, {
         letras: coleccion
       })
+
+      if (response.data.error || !response.data.font_file) {
+        throw new Error(response.data.error || 'No se recibió el archivo de fuente.');
+      }
 
       const fontData = response.data.font_file;
       const fName = response.data.filename;

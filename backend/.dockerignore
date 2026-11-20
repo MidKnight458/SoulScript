@@ -1,0 +1,15 @@
+.idea
+__pycache__
+*.py[cod]
+.venv
+venv
+build
+debug_imgs
+temp
+temp.ufo
+input
+output_svgs
+potrace.exe
+main.py
+compiler.py
+*.log

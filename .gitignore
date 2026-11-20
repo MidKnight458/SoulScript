@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+env/
+
+# Artefactos generados del backend
+backend/build/
+backend/debug_imgs/
+backend/temp/
+backend/temp.ufo/
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/dist-ssr/
+*.local
+
+# IDEs, OS y logs
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.log
+gcm-diagnose.log
+
+# Variables de entorno
+.env
+.env.*
+!.env.example

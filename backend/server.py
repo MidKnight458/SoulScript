@@ -1,23 +1,41 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from pathlib import Path
 from typing import List
-import ufoLib2
-import cv2
-import numpy as np
-import os
-import sys
-import subprocess
 import base64
+import os
+import subprocess
+import sys
+import tempfile
 
-app = FastAPI()
-
+import cv2
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
+import numpy as np
+from pydantic import BaseModel
+import ufoLib2
+
+app = FastAPI(title="SoulScript API")
+
+raw_origins = os.getenv("ALLOWED_ORIGINS", "*").strip()
+allow_origins = (
+    ["*"]
+    if not raw_origins or raw_origins == "*"
+    else [origin.strip() for origin in raw_origins.split(",") if origin.strip()]
+)
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allow_origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.get("/health")
+def health_check():
+    """Endpoint de verificación de estado para Render y Docker."""
+    return {"status": "ok"}
 
 class LetraInput(BaseModel):
     caracter: str
@@ -44,7 +62,7 @@ def calcular_area_firmada(puntos):
     return area / 2.0
 
 @app.post("/generar-fuente")
-async def generar_fuente(payload: Payload):
+def generar_fuente(payload: Payload):
     print(f"🔄 Modo Winding Correction: Procesando {len(payload.letras)} letras...")
     
     font = ufoLib2.Font()
@@ -180,22 +198,57 @@ async def generar_fuente(payload: Payload):
     cod_feature += "} calt;\n"
     font.features.text = cod_feature
 
-    os.makedirs("build", exist_ok=True)
-    font.save("temp.ufo", overwrite=True)
     try:
-        subprocess.run([sys.executable, "-m", "fontmake", "-u", "temp.ufo", "-o", "otf", "--output-dir", "build"], check=True)
-        
-        archivo_otf = None
-        candidatos = [f for f in os.listdir("build") if f.endswith(".otf")]
-        if candidatos: 
-            archivo_otf = os.path.join("build", "SoulScriptIA-Regular.otf") if "SoulScriptIA-Regular.otf" in candidatos else os.path.join("build", candidatos[0])
-            
-        if archivo_otf and os.path.exists(archivo_otf):
-            with open(archivo_otf, "rb") as f:
-                font_data = base64.b64encode(f.read()).decode('utf-8')
-            return {"font_file": font_data, "filename": "SoulScriptIA.otf"}
-        else:
-             return {"error": "No se generó el archivo OTF"}
-             
+        with tempfile.TemporaryDirectory() as tmpdir:
+            ufo_path = os.path.join(tmpdir, "temp.ufo")
+            build_dir = os.path.join(tmpdir, "build")
+            os.makedirs(build_dir, exist_ok=True)
+            font.save(ufo_path, overwrite=True)
+
+            subprocess.run(
+                [sys.executable, "-m", "fontmake", "-u", ufo_path, "-o", "otf", "--output-dir", build_dir],
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+
+            archivo_otf = None
+            candidatos = [f for f in os.listdir(build_dir) if f.endswith(".otf")]
+            if candidatos:
+                archivo_otf = (
+                    os.path.join(build_dir, "SoulScriptIA-Regular.otf")
+                    if "SoulScriptIA-Regular.otf" in candidatos
+                    else os.path.join(build_dir, candidatos[0])
+                )
+
+            if archivo_otf and os.path.exists(archivo_otf):
+                with open(archivo_otf, "rb") as f:
+                    font_data = base64.b64encode(f.read()).decode("utf-8")
+                return {"font_file": font_data, "filename": "SoulScriptIA.otf"}
+            return {"error": "No se generó el archivo OTF"}
+
+    except subprocess.CalledProcessError as e:
+        detalle = (e.stderr or e.stdout or str(e)).strip()
+        return {"error": f"Error al compilar la fuente: {detalle}"}
     except Exception as e:
         return {"error": str(e)}
+
+
+STATIC_DIR = Path(os.getenv("STATIC_DIR", Path(__file__).resolve().parent / "static")).resolve()
+
+if STATIC_DIR.is_dir() and (STATIC_DIR / "index.html").is_file():
+    assets_dir = STATIC_DIR / "assets"
+    if assets_dir.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+    @app.get("/{full_path:path}")
+    def serve_spa(full_path: str):
+        if full_path:
+            candidate = (STATIC_DIR / full_path).resolve()
+            if candidate.is_file() and STATIC_DIR in candidate.parents:
+                return FileResponse(candidate)
+        return FileResponse(STATIC_DIR / "index.html")
+else:
+    @app.get("/")
+    def api_root():
+        return {"service": "SoulScript API", "status": "ok"}

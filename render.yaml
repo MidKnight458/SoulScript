@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: soulscript
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: "10000"
