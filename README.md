@@ -1,71 +1,33 @@
 # SoulScript
 
-Convierte tu escritura a mano en una tipografía real lista para instalar y usar en cualquier lugar.
+**Convierte tu escritura a mano en una tipografía real lista para usar en cualquier lugar.**
 
-## ¿Qué es SoulScript?
+👉 **[Pruébalo ahora en soulscript-safi.onrender.com](https://soulscript-safi.onrender.com)**
 
-La mayoría de las fuentes digitales se sienten idénticas cada vez que repites una letra. **SoulScript** nace para conservar el carácter y la naturalidad de tu trazo: dibujas cada letra, número y símbolo directamente en pantalla y el sistema los transforma en un archivo de fuente **OpenType (`.otf`)**.
-
-Para que tus textos no pierdan ese toque orgánico, puedes dibujar **hasta 3 variantes de cada carácter**, de modo que al escribir letras repetidas la tipografía alterne sus trazos de forma natural.
-
-## Lo que puedes hacer
-
-- **Dibujar con referencias claras:** un lienzo limpio con guías visuales (línea base, altura de minúsculas y ascendentes) para que tus letras queden alineadas entre sí.
-- **Capturar hasta 3 variantes por carácter:** mayúsculas, minúsculas, números y signos de puntuación, con libertad para saltar los caracteres que no necesites.
-- **Probar tu fuente al instante:** escribe en el panel de vista previa en vivo justo después de generar tu tipografía, antes de descargar nada.
-- **Descargar tu archivo `.otf`:** un formato estándar compatible con Windows, macOS, Linux, editores de texto y programas de diseño.
-- **Usar desde PC o tablet:** interfaz adaptativa pensada tanto para ratón como para lápiz óptico o pantalla táctil.
-
-## Cómo funciona
-
-1. **Dibuja:** traza cada carácter sobre el lienzo (puedes repetir hasta tres veces para darle variación natural, o avanzar al siguiente).
-2. **Genera:** pulsa **Generar y Probar** para que el motor convierta tus trazos en vectores y compile tu fuente al momento.
-3. **Prueba y descarga:** escribe en el área de vista previa para ver cómo luce tu letra y descárgala en formato `.otf`.
-
-## Despliegue rápido en Render
-
-Este proyecto incluye un Blueprint (`render.yaml`) que empaqueta toda la aplicación en un solo servicio web, sin configuraciones manuales de URLs ni CORS:
-
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/MidKnight458/SoulScript)
-
-O desde tu panel de [Render](https://dashboard.render.com/):
-
-1. Elige **New + → Blueprint**.
-2. Conecta este repositorio (`MidKnight458/SoulScript`).
-3. Confirma y haz clic en **Apply** para construir y publicar el servicio usando `render.yaml`.
-
-> **Nota sobre el plan gratuito:** si la aplicación pasa varios minutos sin actividad, Render suspende el servicio y la primera visita tras el reposo puede tardar unos segundos en responder mientras vuelve a encenderse.
-
-## Ejecutar en local
-
-### Con Docker Compose (recomendado)
-
-```bash
-docker compose up --build
-```
-
-Luego abre `http://localhost:5173` en tu navegador.
-
-### Sin Docker (desarrollo manual)
-
-En una terminal, inicia el motor de compilación (Python 3.11+):
-
-```bash
-cd backend
-pip install -r requirements.txt
-uvicorn server:app --reload --port 8000
-```
-
-En otra terminal, inicia la interfaz web (Node.js 22+):
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-La aplicación quedará disponible en `http://localhost:5173`.
+> *Nota: si nadie ha entrado en los últimos minutos, la primera carga puede tardar unos segundos mientras el servicio despierta.*
 
 ---
 
-Construido con **React + TypeScript**, **FastAPI**, **OpenCV** y **Docker** por [MidKnight458](https://github.com/MidKnight458).
+## ¿Qué es SoulScript?
+
+La mayoría de las fuentes digitales repiten exactamente la misma forma cada vez que escribes una letra, haciendo que el texto se sienta rígido o artificial. **SoulScript** está pensado para conservar el alma de tu letra: dibujas tus caracteres directamente en pantalla y en segundos obtienes un archivo de tipografía (`.otf`) con tu propio estilo.
+
+Para mantener la naturalidad de la escritura a mano, puedes dibujar **hasta 3 versiones distintas de cada letra**, de modo que cuando una letra se repite en una palabra, su trazo varía de forma orgánica, igual que en papel.
+
+## ¿Por qué te va a gustar?
+
+- **Dibuja sin complicaciones:** cuentas con guías visuales en el lienzo para que tus letras mantengan buena proporción y alineación.
+- **Un toque realmente tuyo:** incluye mayúsculas, minúsculas, números y símbolos, con total libertad para saltar los caracteres que no necesites.
+- **Prueba tu letra al instante:** escribe cualquier frase en la vista previa en vivo antes de descargar tu tipografía.
+- **Cómodo desde cualquier pantalla:** funciona tanto con ratón en computadora como con dedo o lápiz óptico en tablet.
+- **Lista para tus proyectos:** descarga un archivo `.otf` compatible con Windows, macOS, Linux, editores de documentos y herramientas de diseño.
+
+## Cómo crear tu tipografía en 3 pasos
+
+1. **Dibuja tus letras:** entra a [soulscript-safi.onrender.com](https://soulscript-safi.onrender.com) y traza cada carácter sobre el lienzo (hasta 3 variantes por letra, o pulsa **Saltar** para pasar al siguiente).
+2. **Genera y prueba:** haz clic en **Generar y Probar** para ver tu tipografía cobrar vida y escribir un texto de prueba al momento.
+3. **Descarga e instala:** pulsa **Descargar Archivo `.OTF`**, ábrelo con doble clic en tu dispositivo y elige **Instalar** para empezar a usar tu letra en tus documentos y diseños.
+
+---
+
+Creado por [MidKnight458](https://github.com/MidKnight458).
